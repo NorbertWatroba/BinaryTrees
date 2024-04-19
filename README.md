@@ -1,1 +1,1 @@
-# Collage project on BST and AVL binary trees
+# College project on BST and AVL binary trees
