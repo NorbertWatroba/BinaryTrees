@@ -1,3 +1,5 @@
+from math import log2
+
 from BST_Node import Node
 
 
@@ -24,8 +26,10 @@ class BST:
                       ' ' * len(sdat) + (' ' * srl + r[i] + ' ' * srr if i < len(r) else ' ' * s)
                       for i in range(max(len(l), len(r)))])
             return v
-
-        return '\n'.join(inner(self.root))
+        if self.root is not None:
+            return '\n'.join(inner(self.root))
+        else:
+            return 'Tree is empty!'
 
     def insert(self, values: list[int]):
         if self.root is None:
@@ -50,6 +54,18 @@ class BST:
 
         else:
             print(f"Value of {value} already exists in the tree!")
+
+    def delete(self):
+        if self.root is None:
+            print('Tree has no nodes to delete!')
+        else:
+            self._delete(self.root)
+
+    def _delete(self, current_node: Node):
+        if current_node is not None:
+            self._delete(current_node.left)
+            self._delete(current_node.right)
+            self._delete_node(current_node)
 
     def delete_values(self, values: list[int] | map):
         for value in values:
@@ -125,8 +141,10 @@ class BST:
             pre_order, in_order, post_order = self._print(self.root, [], [], [])
             print(f'''  In-order: {", ".join(in_order)}\nPost-order: \
 {", ".join(post_order)}\n Pre-order: {", ".join(pre_order)}''')
+        else:
+            print('Tree is empty!')
 
-    def _print(self, current_node: Node, pre_order: list, in_order: list, post_order: list) -> tuple:
+    def _print(self, current_node: Node, pre_order: list[str], in_order: list[str], post_order: list[str]) -> tuple:
         if current_node is not None:
             pre_order.append(str(current_node.value))
 
@@ -159,3 +177,60 @@ class BST:
         while current_node.right is not None:
             current_node = current_node.right
         return current_node
+
+    def rebalance(self):  # TODO
+        def degenerate():
+            node = self.root
+            counter = 1
+            if not node:
+                return counter
+
+            while node:
+                if node.left:
+                    self._right_rotate(node)
+                    node = node.parent
+                else:
+                    counter += 1
+                    node = node.right
+            return counter
+
+        def balance(node: Node):
+            pass
+
+        if self.root is None:
+            print('Tree has no nodes!')
+            return
+
+    def _left_rotate(self, node: Node):
+        relative_root: Node | None = node.parent
+        old_right: Node = node.right
+        new_right: Node | None = node.right.left
+
+        node.right = new_right
+        if new_right is not None:
+            new_right.parent = node
+
+        old_right.left, node.parent = node, old_right
+        if relative_root is None:
+            self.root, old_right.parent = old_right, None
+        elif relative_root.right == node:
+            relative_root.right, old_right.parent = old_right, relative_root
+        else:
+            relative_root.left, old_right.parent = old_right, relative_root
+
+    def _right_rotate(self, node: Node):
+        relative_root: Node | None = node.parent
+        old_left: Node = node.left
+        new_left: Node | None = node.left.right
+
+        node.left = new_left
+        if new_left is not None:
+            new_left.parent = node
+
+        old_left.right, node.parent = node, old_left
+        if relative_root is None:
+            self.root, old_left.parent = old_left, None
+        elif relative_root.right == node:
+            relative_root.right, old_left.parent = old_left, relative_root
+        else:
+            relative_root.left, old_left.parent = old_left, relative_root
