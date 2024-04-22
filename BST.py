@@ -5,7 +5,7 @@ from BST_Node import Node
 
 class BST:
     def __init__(self, numbers: list[int]):
-        self.root = None
+        self.root: Node | None = None
         self.insert(numbers)
 
     # Funkcja ze Stacka
@@ -234,3 +234,20 @@ class BST:
             relative_root.right, old_left.parent = old_left, relative_root
         else:
             relative_root.left, old_left.parent = old_left, relative_root
+
+    def export(self):
+        return (f'''
+\\begin{{tikzpicture}}
+\\node{{{self.root.value}}}
+{self._export(self.root.left) if self.root.left else "    child[missing]"}
+{self._export(self.root.right) if self.root.right else "    child[missing]"};
+\\end{{tikzpicture}}
+''')
+
+    def _export(self, node: Node, indent: int = 1):
+        if not node.left and not node.right:
+            return '    '*indent + f'child {{node {{{node.value}}}}}'
+        sub_left = f'{self._export(node.left, indent+1)}' if node.left else '    '*(indent+1) + 'child[missing]'
+        sub_right = f'{self._export(node.right, indent+1)}' if node.right else '    '*(indent+1) + 'child[missing]'
+        return '    '*indent + f'child {{node {{{node.value}}}\n{sub_left}\n{sub_right}}}'
+

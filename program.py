@@ -1,13 +1,26 @@
 from BST import BST
 from os import system, name
+import argparse
 
 
 def clear():
     system('cls') if name == 'nt' else system('clear')
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--tree', default='BST', help='choose tree type BST/AVL',
+                    choices=['BST', 'AVL'], type=str.upper)
+args = parser.parse_args()
+
 nums = list(map(int, input('insert> ').split()))
-Tree = BST(nums)
+
+if args.tree.upper() == 'AVL':
+    print('AVL available soon')
+    Tree = BST(nums)
+    # Tree = AVL(nums)
+else:
+    Tree = BST(nums)
+clear()
 while True:
     action = input('action> ')
     clear()
@@ -35,7 +48,12 @@ while True:
         case 'minmax':
             Tree.find_min_max()
         case 'export':
-            print('Soon!')  # TODO
+            path = input('(optional) file name>')
+            if path:
+                with open(path, 'w') as file:
+                    print(Tree.export(), file=file)
+            else:
+                print(Tree.export())
         case 'exit':
             break
         case 'help':
@@ -49,7 +67,7 @@ while True:
 |  Remove      |   Remove elements of the tree                           |
 |  Delete      |   Delete whole tree                                     |
 |  Rebalance   |   Rebalance the tree                                    |
-|  Export      |   Export the tree to tickzpicture                       |
+|  Export      |   Export the tree to tickzpicture (file or text)        |
 |  Exit        |   Exits the program (same as ctrl+D)                    |
 +========================================================================+
 ''')
