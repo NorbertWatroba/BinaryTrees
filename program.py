@@ -12,6 +12,7 @@ parser.add_argument('-t', '--tree', default='BST', help='choose tree type BST/AV
                     choices=['BST', 'AVL'], type=str.upper)
 args = parser.parse_args()
 
+clear()
 nums = list(map(int, input('insert> ').split()))
 
 if args.tree.upper() == 'AVL':
@@ -20,7 +21,6 @@ if args.tree.upper() == 'AVL':
     # Tree = AVL(nums)
 else:
     Tree = BST(nums)
-clear()
 while True:
     action = input('action> ')
     clear()
@@ -33,14 +33,13 @@ while True:
         case 'remove':
             try:
                 values = map(int, input('delete> ').split())
-                Tree.delete_values(values)
+                Tree.remove_values(values)
             except ValueError:
                 print('Can only delete integer numbers!')
         case 'delete':
             Tree.delete()
         case 'rebalance':
-            print('Broken:(')
-            # Tree.rebalance() TODO
+            Tree.rebalance()
         case 'print':
             Tree.print()
         case 'show':
