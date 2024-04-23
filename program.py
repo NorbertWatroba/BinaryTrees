@@ -1,4 +1,5 @@
 from BST import BST
+from AVL import AVL
 from os import system, name
 import argparse
 
@@ -16,9 +17,7 @@ clear()
 nums = list(map(int, input('insert> ').split()))
 
 if args.tree.upper() == 'AVL':
-    print('AVL available soon')
-    Tree = BST(nums)
-    # Tree = AVL(nums)
+    Tree = AVL(nums)
 else:
     Tree = BST(nums)
 while True:

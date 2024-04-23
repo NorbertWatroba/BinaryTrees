@@ -1,13 +1,25 @@
+from BST_Node import Node
 from math import log2
 
-from BST_Node import Node
 
-
-class BST:
-
+class AVL:
     def __init__(self, numbers: list[int]):
-        self.root: Node | None = None
-        self.insert(numbers)
+        numbers.sort()
+        mid_index = len(numbers) // 2
+        median = numbers[mid_index]
+        self.root = Node(median)
+        self.root.left = self._create(numbers[:mid_index], self.root)
+        self.root.right = self._create(numbers[mid_index+1:], self.root)
+
+    def _create(self, numbers: list[int], parent: Node) -> Node | None:
+        if not numbers:
+            return None
+        mid_index = len(numbers) // 2
+        median = numbers[mid_index]
+        node = Node(median, parent)
+        node.left = self._create(numbers[:mid_index], parent)
+        node.right = self._create(numbers[mid_index + 1:], parent)
+        return node
 
     # Funkcja ze Stacka
     def __str__(self):
@@ -27,6 +39,7 @@ class BST:
                       ' ' * len(sdat) + (' ' * srl + r[i] + ' ' * srr if i < len(r) else ' ' * s)
                       for i in range(max(len(l), len(r)))])
             return v
+
         if self.root:
             return '\n'.join(inner(self.root))
         else:
@@ -37,6 +50,8 @@ class BST:
             self.root = Node(values.pop(0))
         for value in values:
             self._insert(value, self.root)
+        if not self._balanced():
+            self.rebalance()
 
     def _insert(self, value: int, current_node: Node):
         if value < current_node.value:
@@ -71,6 +86,8 @@ class BST:
     def remove_values(self, values: list[int] | map):
         for value in values:
             self._delete_node(self.find(value))
+        if not self._balanced():
+            self.rebalance()
 
     def _delete_node(self, node: Node):
         def number_of_children(n: Node):
@@ -180,8 +197,8 @@ class BST:
         return current_node
 
     def rebalance(self):
-        def degenerate():
-            node = self.root
+        def degenerate() -> int:
+            node: Node = self.root
             counter = 0
             while node:
                 if node.left:
@@ -255,8 +272,23 @@ class BST:
 
     def _export(self, node: Node, indent: int = 1):
         if not node.left and not node.right:
-            return '    '*indent + f'child {{node {{{node.value}}}}}'
-        sub_left = f'{self._export(node.left, indent+1)}' if node.left else '    '*(indent+1) + 'child[missing]'
-        sub_right = f'{self._export(node.right, indent+1)}' if node.right else '    '*(indent+1) + 'child[missing]'
-        return '    '*indent + f'child {{node {{{node.value}}}\n{sub_left}\n{sub_right}}}'
+            return '    ' * indent + f'child {{node {{{node.value}}}}}'
+        sub_left = f'{self._export(node.left, indent + 1)}' if node.left else '    ' * (
+                    indent + 1) + 'child[missing]'
+        sub_right = f'{self._export(node.right, indent + 1)}' if node.right else '    ' * (
+                    indent + 1) + 'child[missing]'
+        return '    ' * indent + f'child {{node {{{node.value}}}\n{sub_left}\n{sub_right}}}'
+
+    def _balanced(self) -> bool:
+        def get_height(n: Node) -> int:
+            if n:
+                return max(get_height(n.left), get_height(n.right)) + 1
+            else:
+                return 0
+
+        node = self.root
+        while node:
+            if abs(get_height(node.left) - get_height(node.right)) > 1:
+                return False
+        return True
 
