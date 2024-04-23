@@ -9,7 +9,7 @@ def clear():
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-t', '--tree', default='BST', help='choose tree type BST/AVL',
+parser.add_argument('-t', '--tree', default='AVL', help='choose tree type BST/AVL',
                     choices=['BST', 'AVL'], type=str.upper)
 args = parser.parse_args()
 
@@ -24,50 +24,50 @@ while True:
     action = input('action> ')
     clear()
     match action.strip().lower():
-        case 'insert':
+        case 'insert' | 'i':
             try:
                 Tree.insert(list(map(int, input('values> ').split())))
             except ValueError:
                 print('Can only insert integer numbers!')
-        case 'remove':
+        case 'remove' | 'r':
             try:
                 values = map(int, input('delete> ').split())
                 Tree.remove_values(values)
             except ValueError:
                 print('Can only delete integer numbers!')
-        case 'delete':
+        case 'delete' | 'd':
             Tree.delete()
-        case 'rebalance':
+        case 'rebalance' | 'reb':
             Tree.rebalance()
-        case 'print':
+        case 'print' | 'p':
             Tree.print()
-        case 'show':
+        case 'show' | 's':
             print(Tree)
-        case 'minmax':
+        case 'minmax' | 'm':
             Tree.find_min_max()
-        case 'export':
+        case 'export' | 'e':
             path = input('(optional) file name>')
             if path:
                 with open(path, 'w') as file:
                     print(Tree.export(), file=file)
             else:
                 print(Tree.export())
-        case 'exit':
+        case 'exit' | 'q':
             break
-        case 'help':
+        case 'help' | 'h':
             print('''
-+========================================================================+
-|  Help        |   Show this message                                     |
-|  Print       |   Print the tree usin In-order, Pre-order, Post-order   |
-|  Show        |   Tree representation in terminal                       |
-|  MinMax      |   Find minimum and maximum values                       |
-|  Insert      |   Add new elements to the tree                          |
-|  Remove      |   Remove elements of the tree                           |
-|  Delete      |   Delete whole tree                                     |
-|  Rebalance   |   Rebalance the tree                                    |
-|  Export      |   Export the tree to tickzpicture (file or text)        |
-|  Exit        |   Exits the program (same as ctrl+D)                    |
-+========================================================================+
++==============================================================================+
+|  Help        |  h  |   Show this message                                     |
+|  Print       |  p  |   Print the tree usin In-order, Pre-order, Post-order   |
+|  Show        |  s  |   Tree representation in terminal                       |
+|  MinMax      |  m  |   Find minimum and maximum values                       |
+|  Insert      |  i  |   Add new elements to the tree                          |
+|  Remove      |  r  |   Remove elements of the tree                           |
+|  Delete      |  d  |   Delete whole tree                                     |
+|  Rebalance   | reb |   Rebalance the tree                                    |
+|  Export      |  e  |   Export the tree to tickzpicture (file or text)        |
+|  Exit        |  q  |   Exits the program (same as ctrl+D)                    |
++==============================================================================+
 ''')
         case _:
             print('command not found!\nType help to see the manual')
