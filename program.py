@@ -2,6 +2,7 @@ from BST import BST
 from AVL import AVL
 from os import system, name
 import argparse
+from time import time
 
 
 def clear():
@@ -14,19 +15,28 @@ parser.add_argument('-t', '--tree', default='AVL', help='choose tree type BST/AV
 args = parser.parse_args()
 
 clear()
-nums = list(map(int, input('insert> ').split()))
+while True:
+    try:
+        nums = list(map(int, input('insert> ').split()))
+        break
+    except ValueError:
+        print('Can only insert integer values!')
 
 if args.tree.upper() == 'AVL':
     Tree = AVL(nums)
 else:
     Tree = BST(nums)
+
 while True:
     action = input('action> ')
     clear()
     match action.strip().lower():
         case 'insert' | 'i':
             try:
+                start = time()
                 Tree.insert(list(map(int, input('values> ').split())))
+                end = time()
+
             except ValueError:
                 print('Can only insert integer numbers!')
         case 'remove' | 'r':
