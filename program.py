@@ -33,10 +33,7 @@ while True:
     match action.strip().lower():
         case 'insert' | 'i':
             try:
-                start = time()
                 Tree.insert(list(map(int, input('values> ').split())))
-                end = time()
-
             except ValueError:
                 print('Can only insert integer numbers!')
         case 'remove' | 'r':
